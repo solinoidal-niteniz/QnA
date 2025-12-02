@@ -84,6 +84,66 @@
   textarea{width:100%;height:320px;background:rgba(255,255,255,0.02);color:var(--text);border:1px solid rgba(255,255,255,0.03);padding:10px;border-radius:8px;font-family:monospace;font-size:14px;color:var(--text)}
 
   .muted{color:var(--muted)}
+
+/* ========== MOBILE RESPONSIVE FIXES (PASTE AT END OF CSS) ========== */
+@media (max-width: 720px) {
+
+  .app { padding: 10px; margin: 0; }
+
+  /* deck items stack vertical to avoid button overflow */
+  .deck-item { flex-direction: column; align-items: stretch; gap: 10px; padding: 10px; }
+  .deck-left { margin-bottom: 6px; }
+
+  /* deck action buttons become full width and stacked */
+  .deck-actions { flex-direction: column; gap: 8px; align-items: stretch; }
+  .deck-actions .btn { width: 100%; text-align: center; padding: 10px; }
+
+  /* reduce deck list height so it scrolls nicely */
+  .deck-list { max-height: 48vh; overflow:auto; }
+
+  /* practice card responsive tweaks */
+  .card { padding: 12px; }
+  .qrow { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .qmeta, .dueCount { font-size: 12px; }
+
+  /* options show as two columns on small screens for compactness (or 1 col if very narrow) */
+  .options { grid-template-columns: repeat(1, 1fr); gap: 10px; }
+  @media (min-width:420px) { .options { grid-template-columns: repeat(2, 1fr); } }
+
+  .option { min-height: 52px; padding: 10px; font-size: 15px; }
+  .opt-label { min-width: 34px; height: 34px; }
+
+  /* actions stack */
+  .actions { flex-direction: column; gap: 10px; align-items: stretch; }
+  .stats { text-align: left; }
+
+  /* summary panel stacks */
+  .summary { flex-direction: column; }
+  .summary-right { margin: 0 auto; }
+
+  /* footer buttons stack vertically */
+  .footer { flex-direction: column; gap: 8px; padding-bottom: 18px; position: sticky; bottom: 10px; }
+  .btn-large { width: 100%; }
+
+  /* modal fit better on small screens */
+  .modal { width: 96%; max-width: 680px; }
+  textarea { height: 260px; font-size: 13px; padding: 8px; }
+
+  /* small tweak to avoid overflow of long text */
+  .opt-text { word-break: break-word; }
+  .deck-name { word-break: break-word; }
+  .deck-meta { white-space: normal; }
+
+  /* ensure everything respects container width */
+  * { max-width: 100%; box-sizing: border-box; }
+}
+
+/* Tiny devices */
+@media (max-width: 360px) {
+  .options { grid-template-columns: 1fr; }
+  .opt-text { font-size: 14px; }
+  .deck-list { max-height: 52vh; }
+}
 </style>
 </head>
 <body>
@@ -398,23 +458,32 @@ function renderCard(){
 
   optionsEl.innerHTML = '';
   const letters = ['a','b','c','d','e'];
-  card.options.forEach((opt,i)=>{
-    const d = document.createElement('div'); d.className='option'; d.dataset.opt=i;
-    d.innerHTML = `<div class="opt-label">${letters[i]||i+1}</div><div class="opt-text">${escape(opt)}</div>`;
+
+  // --- SHUFFLE OPTIONS BUT KEEP LABELS FIXED (a, b, c...)
+  const origIndices = card.options.map((_,i)=>i);
+  shuffle(origIndices); // now origIndices is a randomized array of original indices
+
+  origIndices.forEach((origI, displayI)=>{
+    const opt = card.options[origI];
+    const d = document.createElement('div'); d.className='option'; 
+    // store original index so correctness check works
+    d.dataset.opt = origI;
+    d.innerHTML = `<div class="opt-label">${letters[displayI]||displayI+1}</div><div class="opt-text">${escape(opt)}</div>`;
     optionsEl.appendChild(d);
 
     d.onclick = () => {
       if(session[cardIndex] !== 'unattempted') return;
       optionsEl.querySelectorAll('.option').forEach(o => o.classList.add('locked'));
-      const chosen = i;
+      const chosenOrigIndex = Number(d.dataset.opt);
       const correctIdx = (typeof card.answerIndex === 'number') ? card.answerIndex : null;
       if(correctIdx !== null){
-        if(chosen === correctIdx){
+        if(chosenOrigIndex === correctIdx){
           d.classList.add('correct');
           session[cardIndex] = 'correct';
           stats.attempted++; stats.correct++;
         } else {
           d.classList.add('wrong');
+          // highlight the correct option element (find by data-opt)
           const correctEl = optionsEl.querySelector(`.option[data-opt="${correctIdx}"]`);
           if(correctEl) correctEl.classList.add('correct');
           session[cardIndex] = 'wrong';
@@ -444,7 +513,7 @@ function showSummary(){
   session.forEach((v,i)=>{ if(v==='wrong'){ const c=document.createElement('div'); c.className='chip'; c.textContent=`Q${i+1}`; incorrectList.appendChild(c); } if(v==='unattempted'){ const c=document.createElement('div'); c.className='chip'; c.textContent=`Q${i+1}`; unattemptedList.appendChild(c); } });
   summaryPanel.style.display = '';
   drawAccuracyChart(correct, wrong, unattempted, activeDeck.cards.length);
-  if((wrong + unattempted) > 0){ startRelearn.style.display=''; relearnStart.style.display=''; } else { startRelearn.style.display='none'; relearnStart.style.display='none'; }
+  if((wrong + unattempted) > 0){ startRelearn.style.display = ''; relearnStart.style.display = ''; } else { startRelearn.style.display = 'none'; relearnStart.style.display = 'none'; }
 }
 
 function drawAccuracyChart(correct, wrong, unattempted, total){
