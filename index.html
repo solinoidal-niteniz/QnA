@@ -35,12 +35,11 @@
 
   /* NEW: All buttons inside deck-actions have glassy look */
   .deck-actions .btn {
-  background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
-  border:1px solid rgba(255,255,255,0.04);
-  flex-shrink:0; /* prevent button shrink */
-  backdrop-filter: blur(80px); /* Add this line */
-  -webkit-backdrop-filter: blur(80px); /* For iOS/Safari */
-}
+    background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+    border:1px solid rgba(255,255,255,0.04);
+    flex-shrink:0; /* prevent button shrink */
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
   }
   .deck-actions .btn.secondary {
     background:transparent;
@@ -68,8 +67,21 @@
   .options{margin-top:12px;display:grid;grid-template-columns:1fr;gap:10px}
   @media(min-width:720px){ .options{grid-template-columns:1fr 1fr} }
 
-  .option{background:transparent;border-radius:12px;padding:12px 14px;border:1px solid rgba(255,255,255,0.03);display:flex;gap:12px;align-items:center;cursor:pointer;position:relative;min-height:56px;transition:transform .12s ease,box-shadow .12s ease}
-  .option:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(2,6,23,0.45)}
+  /* ============================
+     OPTION BOX (modified: stronger border/shadow/blur)
+     ============================ */
+  .option{
+    background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
+    border-radius:12px;
+    padding:12px 14px;
+    border:2px solid rgba(255,255,255,0.18); /* made thicker and more visible */
+    display:flex;gap:12px;align-items:center;cursor:pointer;position:relative;min-height:56px;
+    transition:transform .12s ease,box-shadow .12s ease,border-color .12s ease;
+    box-shadow: 0 8px 28px rgba(2,6,23,0.28), inset 0 0 12px rgba(255,255,255,0.02); /* stronger shadow and inner glow */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  .option:hover{transform:translateY(-3px);box-shadow:0 14px 36px rgba(2,6,23,0.42)}
   .opt-label{min-width:36px;height:36px;border-radius:9px;background:rgba(255,255,255,0.02);display:inline-flex;align-items:center;justify-content:center;font-weight:800}
   .opt-text{flex:1;font-size:15px}
   .option.locked{pointer-events:none;opacity:0.95}
@@ -90,10 +102,23 @@
   .list-inline{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
   .chip{background:var(--glass);padding:8px 10px;border-radius:999px;font-weight:700;font-size:13px}
 
-  /* Footer actions - iOS 27 like blurry glossy glass effect */
+  /* Footer actions - iOS frosted dark glass style (adjusted) */
   .footer{display:flex;gap:8px;position:fixed;bottom:10px;left:12px;right:12px;z-index:30;padding:8px;background:transparent;align-items:center;justify-content:space-between}
-  .btn-large{flex:1;max-width:calc(50% - 4px);min-height:52px;padding:12px 16px;border-radius:12px;font-weight:800;backdrop-filter:blur(20px);background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);box-shadow:0 4px 20px rgba(0,0,0,0.2)}
-  .btn-finish{flex:1;max-width:calc(50% - 4px);min-height:52px;padding:12px 16px;border-radius:12px;font-weight:900;backdrop-filter:blur(20px);background:linear-gradient(90deg,#0ea67a,#06a3ff);border:none;color:#fff;box-shadow:0 4px 20px rgba(14,166,122,0.3)}
+  .btn-large{
+    flex:1;max-width:calc(50% - 4px);min-height:52px;padding:12px 16px;border-radius:12px;font-weight:800;
+    /* iOS frosted dark */
+    background: rgba(18,18,20,0.35);
+    backdrop-filter: blur(22px) saturate(160%);
+    -webkit-backdrop-filter: blur(22px) saturate(160%);
+    border: 1px solid rgba(255,255,255,0.06);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.48);
+    color: var(--text);
+  }
+  .btn-finish{
+    flex:1;max-width:calc(50% - 4px);min-height:52px;padding:12px 16px;border-radius:12px;font-weight:900;
+    background: linear-gradient(90deg, rgba(16,185,129,0.95), rgba(6,163,255,0.9));
+    border:none;color:#032;box-shadow:0 6px 18px rgba(6,163,255,0.12);
+  }
 
   /* Mobile footer no overlap */
   @media (max-width: 480px) {
@@ -108,6 +133,39 @@
   textarea{width:100%;height:320px;background:rgba(255,255,255,0.02);color:var(--text);border:1px solid rgba(255,255,255,0.03);padding:10px;border-radius:8px;font-family:monospace;font-size:14px;color:var(--text)}
 
   .muted{color:var(--muted)}
+
+
+  /* ============================
+     iOS FROSTED GLASS: SHOW ANSWER & FINISH (ADDED)
+     - Applied to the actual IDs used in your HTML
+     - Minimal, only visual
+     ============================ */
+  #showAnswer,
+  #finishSummary,
+  #finishBtn {
+    background: rgba(22,22,24,0.30);
+    backdrop-filter: blur(26px) saturate(160%);
+    -webkit-backdrop-filter: blur(26px) saturate(160%);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 10px 14px;
+    color: var(--text);
+    font-weight:800;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.48);
+    transition: all .18s ease;
+  }
+  #showAnswer:hover,
+  #finishSummary:hover,
+  #finishBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 36px rgba(0,0,0,0.58);
+  }
+
+  /* small responsive tweak to avoid overlap */
+  @media(max-width:420px){
+    #showAnswer, #finishSummary, #finishBtn { width:100%; display:block; text-align:center; }
+  }
+
 </style>
 </head>
 <body>
@@ -118,7 +176,7 @@
       <div class="lib-top">
         <div>
           <div class="title">MCQ Library</div>
-          <!-- Subtitle removed as requested -->
+          <div class="subtitle">Import .txt blocks in [ ... ] format — use || between Q & options, and \\ between options. Mark correct option with *.</div>
         </div>
 
         <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end">
@@ -148,13 +206,14 @@
             <div class="qtitle" id="qTitle">Question</div>
             <div class="qmeta" id="qMeta">Card 0 of 0</div>
           </div>
-          <div class="qmeta" id="dueCount">Due: 0</div>
+          <!-- 'Due' removed as requested -->
         </div>
 
         <div class="options" id="options"></div>
 
         <div class="actions">
           <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <!-- showAnswer ID preserved -->
             <button id="showAnswer" class="btn secondary">Show Answer</button>
           </div>
           <div class="stats" id="stats">Attempted: 0 • Correct: 0 • Incorrect: 0 • Unattempted: 0</div>
@@ -163,7 +222,7 @@
         <div id="summaryPanel" style="display:none" class="summary">
           <div class="summary-left">
             <div style="font-weight:800">Session Summary</div>
-            <div class="muted" id="summaryCounts" style="margin-top:6px"</div>
+            <div class="muted" id="summaryCounts" style="margin-top:6px">—</div>
 
             <div style="margin-top:10px;font-weight:700">Incorrect questions</div>
             <div class="list-inline" id="incorrectList"></div>
@@ -173,6 +232,7 @@
 
             <div style="margin-top:12px;display:flex;gap:10px">
               <button id="relearnStart" class="btn">Start Relearn</button>
+              <!-- finishSummary ID preserved (styled) -->
               <button id="finishSummary" class="btn secondary">Finish</button>
             </div>
           </div>
@@ -183,9 +243,10 @@
       </div>
     </div>
 
-    <!-- FOOTER - Fixed position for no overlap -->
+    <!-- FOOTER -->
     <div class="footer">
       <button id="skipBtn" class="btn btn-large">Skip</button>
+      <!-- finishBtn ID preserved (styled) -->
       <button id="finishBtn" class="btn btn-large btn-finish">Finish Test</button>
     </div>
   </div>
@@ -217,11 +278,11 @@ const noDeck = document.getElementById('noDeck');
 const practice = document.getElementById('practice');
 const qTitle = document.getElementById('qTitle');
 const qMeta = document.getElementById('qMeta');
-const dueCount = document.getElementById('dueCount');
-const optionsEl = document.getElementById('options');
+const optionsEl = document.getElementById('options'); // dueCount removed
 const statsEl = document.getElementById('stats');
 
 const showAnswer = document.getElementById('showAnswer');
+const startRelearn = document.getElementById('startRelearn');
 
 const summaryPanel = document.getElementById('summaryPanel');
 const summaryCounts = document.getElementById('summaryCounts');
@@ -312,7 +373,7 @@ function renderDeckList(){
       const action = btn.dataset.action;
       if(action === 'start'){ openDeck(idx); }
       else if(action === 'edit'){
-        // Your requested confirmation
+        // Requested confirmation retained
         if(confirm('Do you want to edit?\nYes / No')){
           openEditModal(idx);
         }
@@ -415,11 +476,13 @@ function renderCard(){
   const card = activeDeck.cards[cardIndex];
   qTitle.textContent = card.q;
   qMeta.textContent = `Card ${pos+1} of ${order.length}`;
-  const due = session.reduce((a,v)=> (v==='wrong' || v==='unattempted') ? a+1 : a , 0);
-  dueCount.textContent = `Due: ${due}`;
+  // 'Due' removed — no DOM update here
 
   optionsEl.innerHTML = '';
   const letters = ['a','b','c','d','e'];
+
+  // Keep original behavior (no change) but shuffle display order of labels? NO — we keep the same behavior
+  // We keep labels in order, keep logic intact
   card.options.forEach((opt,i)=>{
     const d = document.createElement('div'); d.className='option'; d.dataset.opt=i;
     d.innerHTML = `<div class="opt-label">${letters[i]||i+1}</div><div class="opt-text">${escape(opt)}</div>`;
