@@ -35,9 +35,12 @@
 
   /* NEW: All buttons inside deck-actions have glassy look */
   .deck-actions .btn {
-    background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
-    border:1px solid rgba(255,255,255,0.04);
-    flex-shrink:0; /* prevent button shrink */
+  background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+  border:1px solid rgba(255,255,255,0.04);
+  flex-shrink:0; /* prevent button shrink */
+  backdrop-filter: blur(30px); /* Add this line */
+  -webkit-backdrop-filter: blur(30px); /* For iOS/Safari */
+}
   }
   .deck-actions .btn.secondary {
     background:transparent;
@@ -153,7 +156,6 @@
         <div class="actions">
           <div style="display:flex;gap:8px;flex-wrap:wrap">
             <button id="showAnswer" class="btn secondary">Show Answer</button>
-            <button id="startRelearn" class="btn secondary" style="display:none">Relearn (incorrect/unattempted)</button>
           </div>
           <div class="stats" id="stats">Attempted: 0 • Correct: 0 • Incorrect: 0 • Unattempted: 0</div>
         </div>
@@ -161,7 +163,7 @@
         <div id="summaryPanel" style="display:none" class="summary">
           <div class="summary-left">
             <div style="font-weight:800">Session Summary</div>
-            <div class="muted" id="summaryCounts" style="margin-top:6px">—</div>
+            <div class="muted" id="summaryCounts" style="margin-top:6px"</div>
 
             <div style="margin-top:10px;font-weight:700">Incorrect questions</div>
             <div class="list-inline" id="incorrectList"></div>
@@ -220,7 +222,6 @@ const optionsEl = document.getElementById('options');
 const statsEl = document.getElementById('stats');
 
 const showAnswer = document.getElementById('showAnswer');
-const startRelearn = document.getElementById('startRelearn');
 
 const summaryPanel = document.getElementById('summaryPanel');
 const summaryCounts = document.getElementById('summaryCounts');
@@ -465,7 +466,7 @@ function showSummary(){
   session.forEach((v,i)=>{ if(v==='wrong'){ const c=document.createElement('div'); c.className='chip'; c.textContent=`Q${i+1}`; incorrectList.appendChild(c); } if(v==='unattempted'){ const c=document.createElement('div'); c.className='chip'; c.textContent=`Q${i+1}`; unattemptedList.appendChild(c); } });
   summaryPanel.style.display = '';
   drawAccuracyChart(correct, wrong, unattempted, activeDeck.cards.length);
-  if((wrong + unattempted) > 0){ startRelearn.style.display=''; relearnStart.style.display=''; } else { startRelearn.style.display='none'; relearnStart.style.display='none'; }
+  if((wrong + unattempted) > 0){ relearnStart.style.display=''; } else { relearnStart.style.display='none'; }
 }
 
 function drawAccuracyChart(correct, wrong, unattempted, total){
@@ -522,7 +523,6 @@ fileInput.addEventListener('change', async (e) => {
 
 searchInput.addEventListener('input', () => { renderDeckList(); });
 
-startRelearn.onclick = () => { buildRelearnOrder(); };
 relearnStart.onclick = () => { buildRelearnOrder(); };
 finishSummary.onclick = () => { summaryPanel.style.display='none'; practice.style.display='none'; noDeck.style.display=''; activeDeck = null; renderDeckList(); };
 
